@@ -1,0 +1,5 @@
+name = raw_input("What is your name?")
+a = hex(int(raw_input("How old are you?")))
+print('Your name is ')
+print(' '.join([hex(ord(letter)) for letter in name]))
+print('You are ' + a +' years old.')
