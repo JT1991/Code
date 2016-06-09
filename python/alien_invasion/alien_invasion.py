@@ -16,7 +16,7 @@ def run_game():
     #Start main loop for game
     while True:
         #Watch for keyboard/mouse events
-        gf.check_events()
+        gf.check_events(ship)
         #Redraw the screen during each pass through the loop
         gf.update_screen(ai_settings, screen, ship)
 
