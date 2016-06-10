@@ -57,6 +57,7 @@ def create_alien(ai_settings, screen, aliens, alien_number, row_number):
     alien.rect.x = alien.x
     alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
     aliens.add(alien)
+
     
 def create_fleet(ai_settings, screen, ship, aliens):
     """Create a full fleet of aliens"""
@@ -69,7 +70,8 @@ def create_fleet(ai_settings, screen, ship, aliens):
         for alien_number in range(number_aliens_x):
             create_alien(ai_settings, screen, aliens, alien_number, row_number)
 
-def update_bullets(bullets):
+
+def update_bullets(ai_settings, screen, ship, aliens, bullets):
     """Update position of bullets and get rid of old bullets"""
     #Update bullet positions.
     bullets.update()
@@ -77,6 +79,17 @@ def update_bullets(bullets):
     for bullet in bullets.copy():
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
+    check_bullet_alien_collisions(ai_settings, screen, ship, aliens, bullets)
+            
+def check_bullet_alien_collisions(ai_settings, screen, ship, aliens, bullets):
+    """Respond to bullet-alien collisions"""
+    #Check for bullet collsion with alien, if true delete alien and bullet
+    collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+
+    if len(aliens) == 0:
+        #Destroy bullets, make new fleet
+        bullets.empty
+        create_fleet(ai_settings, screen, ship, aliens)
 
 
 def change_fleet_direction(ai_settings, aliens):
@@ -92,13 +105,17 @@ def check_fleet_edges(ai_settings, aliens):
             change_fleet_direction(ai_settings, aliens)
             break
     
-def update_aliens(ai_settings, aliens):
+def update_aliens(ai_settings, ship, aliens):
     """
     Check if the fleet is at an edge,
     and then update the postions of all aliens in the fleet.
     """
     check_fleet_edges(ai_settings, aliens)
     aliens.update()
+    #Look for alien-ship collisions
+    if pygame.sprite.spritecollideany(ship, aliens):
+        print("Ship hit!")
+
 
 def update_screen(ai_settings, screen, ship, aliens, bullets):
     """Update images on the screen and flip the new screen."""
