@@ -95,7 +95,7 @@ def create_fleet(ai_settings, screen, ship, aliens):
             create_alien(ai_settings, screen, aliens, alien_number, row_number)
 
 
-def update_bullets(ai_settings, screen, ship, aliens, bullets):
+def update_bullets(ai_settings, screen, stats, sb, ship, aliens, bullets):
     """Update position of bullets and get rid of old bullets"""
     #Update bullet positions.
     bullets.update()
@@ -103,9 +103,9 @@ def update_bullets(ai_settings, screen, ship, aliens, bullets):
     for bullet in bullets.copy():
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
-    check_bullet_alien_collisions(ai_settings, screen, ship, aliens, bullets)
+    check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, bullets)
             
-def check_bullet_alien_collisions(ai_settings, screen, ship, aliens, bullets):
+def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, bullets):
     """Respond to bullet-alien collisions"""
     #Check for bullet collsion with alien, if true delete alien and bullet
     collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
@@ -115,6 +115,9 @@ def check_bullet_alien_collisions(ai_settings, screen, ship, aliens, bullets):
         bullets.empty
         ai_settings.increase_speed()
         create_fleet(ai_settings, screen, ship, aliens)
+    if collisions:
+        stats.score += ai_settings.alien_points
+        sb.prep_score()
 
 
 def change_fleet_direction(ai_settings, aliens):
