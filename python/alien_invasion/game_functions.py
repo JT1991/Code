@@ -116,8 +116,9 @@ def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, 
         ai_settings.increase_speed()
         create_fleet(ai_settings, screen, ship, aliens)
     if collisions:
-        stats.score += ai_settings.alien_points
-        sb.prep_score()
+        for aliens in collisions.values():
+            stats.score += ai_settings.alien_points * len(aliens)
+            sb.prep_score()
 
 
 def change_fleet_direction(ai_settings, aliens):
